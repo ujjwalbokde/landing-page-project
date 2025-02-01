@@ -34,7 +34,7 @@ const DummyContent = () => {
     <div className="bg-neutral-900 p-8 md:p-14 rounded-3xl shadow-lg text-center">
       <p className="text-gray-300 text-base md:text-xl max-w-3xl mx-auto">
         <span className="font-bold text-white">
-          "The first rule of Apple club is that you boast about Apple club."
+          &quot;The first rule of Apple club is that you boast about Apple club&quot;
         </span>{" "}
         Capture every thought with precision. Enhance productivity and creativity effortlessly.
       </p>
