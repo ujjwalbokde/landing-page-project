@@ -1,17 +1,13 @@
-import React, { useEffect } from "react";
-
-export const useOutsideClick = (
-  ref: React.RefObject<HTMLDivElement>,
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  callback: Function
-) => {
+/* eslint-disable @typescript-eslint/no-unused-vars */
+type Handler = (event: MouseEvent | TouchEvent) => void;
+import { useEffect } from "react";
+const useOutsideClick = (ref: React.RefObject<HTMLElement>, handler: Handler) => {
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const listener = (event: any) => {
-      if (!ref.current || ref.current.contains(event.target)) {
+    const listener = (event: MouseEvent | TouchEvent) => {
+      if (!ref.current || ref.current.contains(event.target as Node)) {
         return;
       }
-      callback(event);
+      handler(event);
     };
 
     document.addEventListener("mousedown", listener);
@@ -21,5 +17,7 @@ export const useOutsideClick = (
       document.removeEventListener("mousedown", listener);
       document.removeEventListener("touchstart", listener);
     };
-  }, [ref, callback]);
+  }, [ref, handler]);
 };
+
+export default useOutsideClick;
