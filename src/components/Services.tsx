@@ -3,7 +3,7 @@ import { HoverEffect } from "./ui/card-hover-effect";
 
 export function Services() {
   return (
-    <div className="max-w-5xl mx-auto px-8 text-white py-12  text-center">
+    <div className="max-w-5xl mx-auto px-8 text-white py-12  text-center" id="services">
       <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 text-transparent bg-clip-text mb-8">
         Our Services
       </h1>

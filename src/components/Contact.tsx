@@ -20,7 +20,7 @@ export function ContactUs() {
   };
 
   return (
-    <div className="w-full h-full py-20 bg-black text-white">
+    <div className="w-full h-full py-20 bg-black text-white" id="contact">
       {/* Gradient Title */}
       <h2 className="max-w-7xl pl-4 mx-auto text-3xl md:text-5xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text text-center">
         Contact Us

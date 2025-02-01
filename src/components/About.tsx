@@ -9,7 +9,7 @@ export function About() {
   ));
 
   return (
-    <div className="w-full h-full py-20 bg-black text-white">
+    <div className="w-full h-full py-20 bg-black text-white" id="about">
       {/* Gradient Title */}
       <h2 className="max-w-7xl pl-4 mx-auto text-3xl md:text-5xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text text-center">
         Get to Know About Us
@@ -31,7 +31,7 @@ export function About() {
 /* Dummy Content */
 const DummyContent = () => {
   return (
-    <div className="bg-neutral-900 p-8 md:p-14 rounded-3xl shadow-lg text-center">
+    <div className="bg-neutral-900 p-8 md:p-14 rounded-3xl shadow-lg text-center" id="about">
       <p className="text-gray-300 text-base md:text-xl max-w-3xl mx-auto">
         <span className="font-bold text-white">
           &quot;The first rule of Apple club is that you boast about Apple club&quot;
