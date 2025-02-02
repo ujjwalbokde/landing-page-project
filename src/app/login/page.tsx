@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-
+import { FaGoogle, FaTwitter } from 'react-icons/fa'; 
 const AuthForm = () => {
   const [isSignUp, setIsSignUp] = useState(false);
 
@@ -14,11 +14,10 @@ const AuthForm = () => {
           className={`absolute top-0 w-full md:w-1/2 h-full transition-all duration-500 ${isSignUp ? "translate-x-full opacity-100 z-10" : "opacity-0 z-0"}`}
         >
           <form className="flex flex-col items-center justify-center h-full p-8 text-center">
-            <h1 className="text-xl font-bold">Create Account</h1>
+            <h1 className="text-2xl font-bold transition duration-300 text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">Create Account</h1>
             <div className="flex gap-2 my-4">
-              <a href="#" className="p-2 border border-gray-300 rounded-full"><i className="fab fa-facebook-f"></i></a>
-              <a href="#" className="p-2 border border-gray-300 rounded-full"><i className="fab fa-google-plus-g"></i></a>
-              <a href="#" className="p-2 border border-gray-300 rounded-full"><i className="fab fa-linkedin-in"></i></a>
+            <a href="#" className="p-2 border border-[#db4437] bg-[#db4437]  hover:bg-red-700 rounded-full"><FaGoogle/></a>
+            <a href="#" className="p-2 border border-[#1da1f2] bg-[#1da1f2]  hover:bg-blue-600 rounded-full"><FaTwitter/></a>
             </div>
             <span className="text-sm">or use your email for registration</span>
             <input
@@ -47,11 +46,10 @@ const AuthForm = () => {
           className={`absolute top-0 w-full md:w-1/2 h-full transition-all duration-500 ${isSignUp ? "translate-x-full opacity-0 z-0" : "translate-x-0 opacity-100 z-10"}`}
         >
           <form className="flex flex-col items-center justify-center h-full p-8 text-center">
-            <h1 className="text-xl font-bold">Sign in</h1>
+            <h1 className="text-2xl font-bold transition duration-300 text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">Sign in</h1>
             <div className="flex gap-2 my-4">
-              <a href="#" className="p-2 border border-gray-300 rounded-full"><i className="fab fa-facebook-f"></i></a>
-              <a href="#" className="p-2 border border-gray-300 rounded-full"><i className="fab fa-google-plus-g"></i></a>
-              <a href="#" className="p-2 border border-gray-300 rounded-full"><i className="fab fa-linkedin-in"></i></a>
+            <a href="#" className="p-2 border border-[#db4437] bg-[#db4437]  hover:bg-red-700 rounded-full"><FaGoogle/></a>
+            <a href="#" className="p-2 border border-[#1da1f2] bg-[#1da1f2]  hover:bg-blue-600 rounded-full"><FaTwitter/></a>
             </div>
             <span className="text-sm">or use your account</span>
             <input
@@ -73,7 +71,7 @@ const AuthForm = () => {
 
         {/* Panel - Hidden on small screens */}
         <div
-          className={`hidden md:flex absolute top-0 left-1/2 w-full md:w-1/2 h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white flex flex-col items-center justify-center transition-all duration-500 ${isSignUp ? "-translate-x-full" : "translate-x-0"}`}
+          className={`hidden md:flex ${!isSignUp?"rounded-l-full":"rounded-r-full"} absolute top-0 left-1/2 w-full md:w-1/2 h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white flex flex-col items-center justify-center transition-all duration-500 ${isSignUp ? "-translate-x-full" : "translate-x-0"}`}
         >
           <div className="text-center p-8">
             {isSignUp ? (
