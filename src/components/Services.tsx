@@ -1,6 +1,5 @@
 
 import { HoverEffect } from "./ui/card-hover-effect";
-
 export function Services() {
   return (
     <div className="max-w-5xl mx-auto px-8 text-white py-12  text-center" id="services">

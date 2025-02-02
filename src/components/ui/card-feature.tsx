@@ -17,11 +17,10 @@ export function Card() {
       >
         <div className="text relative z-50">
           <h1 className="font-bold text-xl md:text-3xl text-gray-50 relative">
-            Background Overlays
+            Title 
           </h1>
           <p className="font-normal text-base text-gray-50 relative my-4">
-            This card is for some special elements, like displaying background
-            gifs on hover only.
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Obcaecati fuga animi id dolorum, magni eveniet inventore 
           </p>
         </div>
       </div>

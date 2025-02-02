@@ -60,11 +60,13 @@ const Navbar = () => {
           style={{ height: isOpen ? "calc(100vh - 4rem)" : "auto" }}
         >
           <Link
-            href="/"
-            className="block w-full text-left md:inline-block py-2 md:py-0 text-lg transition duration-300 hover:text-transparent hover:bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text"
-          >
-            Home
-          </Link>
+  href="/"
+  className="block w-full text-left md:inline-block py-2 md:py-0 text-lg transition duration-300 hover:text-transparent hover:bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text"
+  onClick={() => setIsOpen(false)} // Close the menu when clicking Home
+>
+  Home
+</Link>
+
           {/* About Section */}
           <button
             onClick={() => scrollToSection('about')}
@@ -105,7 +107,7 @@ const Navbar = () => {
             >
               <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
               <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-medium text-white backdrop-blur-3xl">
-                <Link href="/signup">Sign Up</Link>
+                <Link href="/login">Sign In</Link>
               </span>
             </button>
           </div>
@@ -116,7 +118,7 @@ const Navbar = () => {
           <button className="relative inline-flex h-12 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
             <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
             <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-medium text-white backdrop-blur-3xl">
-              <Link href="/login">Log In</Link>
+              <Link href="/login">Sign In</Link>
             </span>
           </button>
         </div>
