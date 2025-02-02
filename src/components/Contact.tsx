@@ -1,6 +1,6 @@
 "use client";
 import React, { FormEvent, useState } from "react";
-import { Globe } from "./Globe";
+import Globe from "./Globe";
 
 export function ContactUs() {
   const [formData, setFormData] = useState({
