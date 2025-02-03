@@ -71,7 +71,7 @@ const AuthForm = () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: "http://localhost:3000/profile", 
+        redirectTo: "https://ujjwalbokde-landing-page.vercel.app/profile", 
     },
     });
 
