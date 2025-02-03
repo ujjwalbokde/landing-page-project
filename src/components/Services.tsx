@@ -2,10 +2,10 @@
 import { HoverEffect } from "./ui/card-hover-effect";
 export function Services() {
   return (
-    <div className="max-w-5xl mx-auto px-8 text-white py-12  text-center" id="services">
-      <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 text-transparent bg-clip-text mb-8">
+    <div className="max-w-5xl mx-auto px-8 text-white py-20  text-center" id="services">
+      <h2 className="max-w-7xl pl-4 mb-10 mx-auto text-3xl md:text-5xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text text-center">
         Our Services
-      </h1>
+      </h2>
       <HoverEffect items={projects} />
     </div>
   );
