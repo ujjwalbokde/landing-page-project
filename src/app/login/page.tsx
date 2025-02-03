@@ -1,12 +1,18 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import { useEffect, useState } from "react";
-import { FaGoogle, FaTwitter } from 'react-icons/fa';
-
+import { supabase } from '@/lib/supabaseClient';
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 const AuthForm = () => {
   const [isSignUp, setIsSignUp] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const router=useRouter()
   // Detecting screen size
   useEffect(() => {
     const handleResize = () => {
@@ -23,42 +29,108 @@ const AuthForm = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name,
+        },
+      },
+    });
+
+    if (error) {
+      alert(error.message);
+    } else {
+      alert('Check your email for the confirmation link!');
+    }
+    setLoading(false);
+  };
+
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      alert(error.message);
+    } else {
+      router.push("/profile")
+    }
+    setLoading(false);
+  };
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: "http://localhost:3000/profile", 
+    },
+    });
+
+    console.log(error);
+    router.push("/profile")
+    setLoading(false);
+  };
+
   return (
-    
-    <div className="flex flex-col items-center justify-center min-h-screen px-4 md:px-0">
+    <div className="flex flex-col items-center lg:justify-center min-h-screen px-4 md:px-0">
       {/* Large screen UI */}
       {!isMobile && (
         <div
-        className={`relative w-full max-w-[768px] min-h-[480px] text-white border-2 border-gray-600 shadow-2xl rounded-lg overflow-hidden transition-all duration-500 ease-in-out ${isSignUp ? "right-panel-active" : ""}`}
+          className={`relative w-full max-w-[768px] min-h-[480px] text-white border-2 border-gray-600 shadow-2xl rounded-lg overflow-hidden transition-all duration-500 ease-in-out ${isSignUp ? "right-panel-active" : ""}`}
         >
           {/* SignUp Form */}
           <div
             className={`absolute top-0 w-full md:w-1/2 h-full transition-all duration-500 ${isSignUp ? "translate-x-full opacity-100 z-10" : "opacity-0 z-0"}`}
           >
-            <form className="flex flex-col items-center justify-center h-full p-8 text-center">
-              <h1 className="text-2xl font-bold transition duration-300 text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">Create Account</h1>
-              <div className="flex gap-2 my-4">
-                <a href="#" className="p-2 border border-[#db4437] bg-[#db4437] hover:bg-red-700 rounded-full"><FaGoogle /></a>
-                <a href="#" className="p-2 border border-[#1da1f2] bg-[#1da1f2] hover:bg-blue-600 rounded-full"><FaTwitter /></a>
+            <form onSubmit={handleSignUp} className="flex flex-col items-center justify-center h-full p-8 text-center">
+              <h1 className="text-3xl font-bold transition duration-300 text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">Create Account</h1>
+              <div className="w-full flex space-x-4 mb-4">
+                <Button
+                  className="mx-auto py-5 flex items-center justify-center mt-3"
+                  onClick={handleGoogleLogin}
+                  disabled={loading}
+                >
+                  <Image src="/googleIcon.svg" alt="Google" width={25} height={25} />
+                  {loading ? 'Loading...' : 'Log in with Google'}
+                </Button>
               </div>
               <span className="text-sm">or use your email for registration</span>
               <input
                 type="text"
                 placeholder="Name"
-                className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
               <input
                 type="email"
                 placeholder="Email"
-                className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <input
                 type="password"
                 placeholder="Password"
-                className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
-              <button className="mt-4 px-6 py-2 text-white rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
-                Sign Up
+              <button
+                type="submit"
+                className="mt-4 px-6 py-2 text-white rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
+                disabled={loading}
+              >
+                {loading ? 'Loading...' : 'Sign Up'}
               </button>
             </form>
           </div>
@@ -67,26 +139,40 @@ const AuthForm = () => {
           <div
             className={`absolute top-0 w-full md:w-1/2 h-full transition-all duration-500 ${isSignUp ? "translate-x-full opacity-0 z-0" : "translate-x-0 opacity-100 z-10"}`}
           >
-            <form className="flex flex-col items-center justify-center h-full p-8 text-center">
-              <h1 className="text-2xl font-bold transition duration-300 text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">Sign in</h1>
-              <div className="flex gap-2 my-4">
-                <a href="#" className="p-2 border border-[#db4437] bg-[#db4437] hover:bg-red-700 rounded-full"><FaGoogle /></a>
-                <a href="#" className="p-2 border border-[#1da1f2] bg-[#1da1f2] hover:bg-blue-600 rounded-full"><FaTwitter /></a>
+            <form onSubmit={handleSignIn} className="flex flex-col items-center justify-center h-full p-8 text-center">
+              <h1 className="text-3xl font-bold transition duration-300 text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">Sign in</h1>
+              <div className="w-full flex space-x-4 mb-4">
+                <Button
+                  className="mx-auto py-5 flex items-center justify-center mt-3"
+                  onClick={handleGoogleLogin}
+                  disabled={loading}
+                >
+                  <Image src="/googleIcon.svg" alt="Google" width={25} height={25} />
+                  {loading ? 'Loading...' : 'Log in with Google'}
+                </Button>
               </div>
               <span className="text-sm">or use your account</span>
               <input
                 type="email"
                 placeholder="Email"
-                className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <input
                 type="password"
                 placeholder="Password"
-                className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <a href="#" className="text-sm mt-2 text-gray-500">Forgot your password?</a>
-              <button className="mt-4 px-6 py-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white rounded-full">
-                Sign In
+              <button
+                type="submit"
+                className="mt-4 px-6 py-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white rounded-full"
+                disabled={loading}
+              >
+                {loading ? 'Loading...' : 'Sign In'}
               </button>
             </form>
           </div>
@@ -122,68 +208,94 @@ const AuthForm = () => {
             </div>
           </div>
         </div>
-
       )}
-
 
       {/* Mobile UI */}
       {isMobile && (
         <div className="w-full">
           <div className="flex flex-col items-center justify-center min-h-screen px-4">
-            
-
             {/* SignUp Form */}
             {isSignUp && (
-              <form className="flex flex-col items-center justify-center w-full p-8 text-center border rounded-lg">
-                <h1 className="text-2xl font-bold text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">Create Account</h1>
-                <div className="flex gap-2 my-4">
-                  <a href="#" className="p-2 border border-[#db4437] bg-[#db4437] hover:bg-red-700 rounded-full"><FaGoogle /></a>
-                  <a href="#" className="p-2 border border-[#1da1f2] bg-[#1da1f2] hover:bg-blue-600 rounded-full"><FaTwitter /></a>
-                </div>
+              <form onSubmit={handleSignUp} className="flex flex-col items-center justify-center w-full p-8 text-center border rounded-lg">
+                <h1 className="text-3xl font-bold text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">Create Account</h1>
+                <div className="w-full flex space-x-4 ">
+                <Button
+                  className="mx-auto py-5 flex items-center justify-center mt-3"
+                  onClick={handleGoogleLogin}
+                  disabled={loading}  
+                >
+                  <Image src="/googleIcon.svg" alt="Google" width={25} height={25} />
+                  {loading ? 'Loading...' : 'Log in with Google'}
+                </Button>
+              </div>
                 <span className="text-sm">or use your email for registration</span>
                 <input
                   type="text"
                   placeholder="Name"
-                  className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full text-black p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                 />
                 <input
                   type="email"
                   placeholder="Email"
-                  className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
                 <input
                   type="password"
                   placeholder="Password"
-                  className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
-                <button className="mt-4 px-6 py-2 text-white rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
-                  Sign Up
+                <button
+                  type="submit"
+                  className="mt-4 px-6 py-2 text-white rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
+                  disabled={loading}
+                >
+                  {loading ? 'Loading...' : 'Sign Up'}
                 </button>
               </form>
             )}
 
             {/* SignIn Form */}
             {!isSignUp && (
-              <form className="flex flex-col items-center justify-center w-full p-8 text-center border rounded-lg">
-                <h1 className="text-2xl font-bold text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">Sign in</h1>
-                <div className="flex gap-2 my-4">
-                  <a href="#" className="p-2 border border-[#db4437] bg-[#db4437] hover:bg-red-700 rounded-full"><FaGoogle /></a>
-                  <a href="#" className="p-2 border border-[#1da1f2] bg-[#1da1f2] hover:bg-blue-600 rounded-full"><FaTwitter /></a>
-                </div>
+              <form onSubmit={handleSignIn} className="flex flex-col items-center justify-center w-full p-8 text-center border rounded-lg">
+                <h1 className="text-3xl font-bold text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">Sign in</h1>
+                <div className="w-full flex space-x-4 ">
+                <Button
+                  className="mx-auto py-5 flex items-center justify-center mt-3"
+                  onClick={handleGoogleLogin}
+                  disabled={loading}
+                >
+                  <Image src="/googleIcon.svg" alt="Google" width={25} height={25} />
+                  {loading ? 'Loading...' : 'Log in with Google'}
+                </Button>
+              </div>
                 <span className="text-sm">or use your account</span>
                 <input
                   type="email"
                   placeholder="Email"
-                  className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
                 <input
                   type="password"
                   placeholder="Password"
-                  className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2 mt-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <a href="#" className="text-sm mt-2 text-gray-500">Forgot your password?</a>
-                <button className="mt-4 px-6 py-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white rounded-full">
-                  Sign In
+                <button
+                  type="submit"
+                  className="mt-4 px-6 py-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white rounded-full"
+                  disabled={loading}
+                >
+                  {loading ? 'Loading...' : 'Sign In'}
                 </button>
               </form>
             )}
@@ -198,7 +310,6 @@ const AuthForm = () => {
         </div>
       )}
     </div>
-
   );
 };
 
