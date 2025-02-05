@@ -2,9 +2,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { supabase } from '@/lib/supabaseClient';
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
+
 const AuthForm = () => {
   const [isSignUp, setIsSignUp] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -12,7 +11,9 @@ const AuthForm = () => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
-  const router=useRouter()
+  const [error, setError] = useState('');
+  const router = useRouter();
+
   // Detecting screen size
   useEffect(() => {
     const handleResize = () => {
@@ -32,7 +33,9 @@ const AuthForm = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    setError('');
+
+    const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -42,10 +45,11 @@ const AuthForm = () => {
       },
     });
 
-    if (error) {
-      alert(error.message);
+    if (signUpError) {
+      setError(signUpError.message);
     } else {
-      alert('Check your email for the confirmation link!');
+      setIsSignUp(false); // Switch to sign-in section after successful sign-up
+      setError(''); // Clear any previous errors
     }
     setLoading(false);
   };
@@ -53,30 +57,18 @@ const AuthForm = () => {
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
+    setError('');
+
+    const { error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (error) {
-      alert(error.message);
+    if (signInError) {
+      setError(signInError.message);
     } else {
-      router.push("/profile")
+      router.push("/profile");
     }
-    setLoading(false);
-  };
-
-  const handleGoogleLogin = async () => {
-    setLoading(true);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: "https://ujjwalbokde-landing-page.vercel.app/profile", 
-    },
-    });
-
-    console.log(error);
-    router.push("/profile")
     setLoading(false);
   };
 
@@ -92,18 +84,8 @@ const AuthForm = () => {
             className={`absolute top-0 w-full md:w-1/2 h-full transition-all duration-500 ${isSignUp ? "translate-x-full opacity-100 z-10" : "opacity-0 z-0"}`}
           >
             <form onSubmit={handleSignUp} className="flex flex-col items-center justify-center h-full p-8 text-center">
-              <h1 className="text-3xl font-bold transition duration-300 text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">Create Account</h1>
-              <div className="w-full flex space-x-4 mb-4">
-                <Button
-                  className="mx-auto py-5 flex items-center justify-center mt-3"
-                  onClick={handleGoogleLogin}
-                  disabled={loading}
-                >
-                  <Image src="/googleIcon.svg" alt="Google" width={25} height={25} />
-                  {loading ? 'Loading...' : 'Log in with Google'}
-                </Button>
-              </div>
-              <span className="text-sm">or use your email for registration</span>
+              <h1 className="text-4xl font-bold transition duration-300 text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text mb-5">Create Account</h1>
+              
               <input
                 type="text"
                 placeholder="Name"
@@ -125,6 +107,7 @@ const AuthForm = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
               <button
                 type="submit"
                 className="mt-4 px-6 py-2 text-white rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
@@ -140,18 +123,7 @@ const AuthForm = () => {
             className={`absolute top-0 w-full md:w-1/2 h-full transition-all duration-500 ${isSignUp ? "translate-x-full opacity-0 z-0" : "translate-x-0 opacity-100 z-10"}`}
           >
             <form onSubmit={handleSignIn} className="flex flex-col items-center justify-center h-full p-8 text-center">
-              <h1 className="text-3xl font-bold transition duration-300 text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">Sign in</h1>
-              <div className="w-full flex space-x-4 mb-4">
-                <Button
-                  className="mx-auto py-5 flex items-center justify-center mt-3"
-                  onClick={handleGoogleLogin}
-                  disabled={loading}
-                >
-                  <Image src="/googleIcon.svg" alt="Google" width={25} height={25} />
-                  {loading ? 'Loading...' : 'Log in with Google'}
-                </Button>
-              </div>
-              <span className="text-sm">or use your account</span>
+              <h1 className="text-4xl font-bold transition duration-300 text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text mb-5">Sign in</h1>
               <input
                 type="email"
                 placeholder="Email"
@@ -166,6 +138,7 @@ const AuthForm = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
               <a href="#" className="text-sm mt-2 text-gray-500">Forgot your password?</a>
               <button
                 type="submit"
@@ -217,18 +190,8 @@ const AuthForm = () => {
             {/* SignUp Form */}
             {isSignUp && (
               <form onSubmit={handleSignUp} className="flex flex-col items-center justify-center w-full p-8 text-center border rounded-lg">
-                <h1 className="text-3xl font-bold text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">Create Account</h1>
-                <div className="w-full flex space-x-4 ">
-                <Button
-                  className="mx-auto py-5 flex items-center justify-center mt-3"
-                  onClick={handleGoogleLogin}
-                  disabled={loading}  
-                >
-                  <Image src="/googleIcon.svg" alt="Google" width={25} height={25} />
-                  {loading ? 'Loading...' : 'Log in with Google'}
-                </Button>
-              </div>
-                <span className="text-sm">or use your email for registration</span>
+                <h1 className="text-4xl font-bold text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text mb-5">Create Account</h1>
+                
                 <input
                   type="text"
                   placeholder="Name"
@@ -250,6 +213,7 @@ const AuthForm = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
                 <button
                   type="submit"
                   className="mt-4 px-6 py-2 text-white rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
@@ -263,18 +227,8 @@ const AuthForm = () => {
             {/* SignIn Form */}
             {!isSignUp && (
               <form onSubmit={handleSignIn} className="flex flex-col items-center justify-center w-full p-8 text-center border rounded-lg">
-                <h1 className="text-3xl font-bold text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">Sign in</h1>
-                <div className="w-full flex space-x-4 ">
-                <Button
-                  className="mx-auto py-5 flex items-center justify-center mt-3"
-                  onClick={handleGoogleLogin}
-                  disabled={loading}
-                >
-                  <Image src="/googleIcon.svg" alt="Google" width={25} height={25} />
-                  {loading ? 'Loading...' : 'Log in with Google'}
-                </Button>
-              </div>
-                <span className="text-sm">or use your account</span>
+                <h1 className="text-4xl font-bold text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text mb-5">Sign in</h1>
+                
                 <input
                   type="email"
                   placeholder="Email"
@@ -289,6 +243,7 @@ const AuthForm = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
                 <a href="#" className="text-sm mt-2 text-gray-500">Forgot your password?</a>
                 <button
                   type="submit"
